@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-snapshot-config
+  namespace: ai-snapshot
+data:
+  PORT: "8765"
+  LOG_LEVEL: "info"
+  ALLOWED_ORIGINS: "http://localhost:5173,http://localhost:8765"

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-snapshot-backend
+  namespace: ai-snapshot
+  labels:
+    app: ai-snapshot-backend
+    epic: AISNP-1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-snapshot-backend
+  template:
+    metadata:
+      labels:
+        app: ai-snapshot-backend
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/maverick-wiz/ai-snapshot/backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8765
+          envFrom:
+            - configMapRef:
+                name: ai-snapshot-config
+            - secretRef:
+                name: ai-snapshot-secret
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8765
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 8765
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
