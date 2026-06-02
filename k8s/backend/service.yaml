@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-snapshot-backend
+  namespace: ai-snapshot
+spec:
+  selector:
+    app: ai-snapshot-backend
+  ports:
+    - port: 8765
+      targetPort: 8765
+  type: ClusterIP
