@@ -1,6 +1,10 @@
-"""GET /api/countries. AISNP-19 · Owner: OMEGA"""
-from fastapi import APIRouter
+"""
+GET /api/countries with rate limiting.
+AISNP-19 · AISNP-20 · Owner: OMEGA
+"""
+from fastapi import APIRouter, Request
 from app.schemas import Country
+from app.limiter import limiter
 
 router = APIRouter(tags=["Countries"])
 
@@ -33,5 +37,6 @@ COUNTRIES = [
 ]
 
 @router.get("/countries", response_model=list[Country])
-async def get_countries():
+@limiter.limit("60/minute")
+async def get_countries(request: Request):
     return COUNTRIES
