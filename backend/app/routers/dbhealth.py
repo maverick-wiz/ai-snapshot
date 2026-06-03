@@ -25,6 +25,6 @@ async def db_health(db: AsyncSession = Depends(get_db)):
 
 @router.get("/config")
 async def get_config(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(AppConfig).where(AppConfig.is_public == True))
+    result = await db.execute(select(AppConfig).where(AppConfig.is_public is True))
     rows = result.scalars().all()
     return {row.config_key: row.config_value for row in rows}

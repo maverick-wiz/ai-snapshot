@@ -2,8 +2,6 @@
 GET/PUT /api/users/{id}/preferences
 AISNP-28 · Owner: ATLAS
 """
-import uuid
-from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -61,11 +59,16 @@ async def update_preferences(request: Request, user_id: str, body: PreferenceUpd
     if not prefs:
         raise HTTPException(404, "Preferences not found")
 
-    if body.default_country: prefs.default_country = body.default_country.upper()
-    if body.watchlist_tickers is not None: prefs.watchlist_tickers = body.watchlist_tickers
-    if body.refresh_interval_secs is not None: prefs.refresh_interval_secs = body.refresh_interval_secs
-    if body.news_limit is not None: prefs.news_limit = body.news_limit
-    if body.theme: prefs.theme = body.theme
+    if body.default_country:
+        prefs.default_country = body.default_country.upper()
+    if body.watchlist_tickers is not None:
+        prefs.watchlist_tickers = body.watchlist_tickers
+    if body.refresh_interval_secs is not None:
+        prefs.refresh_interval_secs = body.refresh_interval_secs
+    if body.news_limit is not None:
+        prefs.news_limit = body.news_limit
+    if body.theme:
+        prefs.theme = body.theme
 
     await db.commit()
     return {"status": "updated", "user_id": user_id}

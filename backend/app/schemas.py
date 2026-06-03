@@ -4,7 +4,6 @@ AISNP-21 · Owner: OMEGA
 """
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
-from datetime import datetime
 
 
 class NewsArticle(BaseModel):

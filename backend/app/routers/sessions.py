@@ -2,7 +2,9 @@
 POST/DELETE /api/sessions — login/logout with SHA-256 session tokens.
 AISNP-29 · Owner: ATLAS
 """
-import uuid, hashlib, secrets
+import uuid
+import hashlib
+import secrets
 from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, HTTPException, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession

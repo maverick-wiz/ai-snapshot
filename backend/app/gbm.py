@@ -4,7 +4,6 @@ AISNP-39 · Owner: OMEGA
 """
 import math
 import random
-import time
 from datetime import datetime, timezone
 
 # Baseline prices (approximate real-world anchors)

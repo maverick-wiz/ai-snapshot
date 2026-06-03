@@ -7,9 +7,10 @@ from datetime import datetime, timezone
 from typing import Optional
 from sqlalchemy import (
     Boolean, String, Text, SmallInteger, CHAR,
-    ForeignKey, func
+    ForeignKey
 )
-from sqlalchemy.dialects.postgresql import UUID, JSONB, TIMESTAMPTZ
+from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy import DateTime as TIMESTAMPTZ
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 

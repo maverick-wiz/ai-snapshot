@@ -3,10 +3,10 @@ Basic backend tests — Phase 1 scaffold.
 AISNP-23 · Owner: OMEGA + DELTA
 Full test suite to be expanded in Phase 2 (AISNP-23, AISNP-44, AISNP-46).
 """
-import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, MagicMock
-import sys, os
+from unittest.mock import patch
+import sys
+import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from app.main import app
@@ -93,7 +93,8 @@ def test_gbm_generates_prices():
 
 
 def test_config_endpoint():
-    r = client.get("/api/config")
+    # /api/config/public — no DB required, static response
+    r = client.get("/api/config/public")
     assert r.status_code == 200
     data = r.json()
     assert "default_tickers" in data

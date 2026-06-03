@@ -1,7 +1,7 @@
 // App root — stock state completely isolated from news state.
 // AISNP-31 · Owner: PIXEL
 import { useState } from 'react';
-import '../styles/globals.css';
+import './styles/globals.css';
 import { Header } from './components/Header';
 import { StockPanel } from './components/StockPanel';
 import { NewsPanel } from './components/NewsPanel';

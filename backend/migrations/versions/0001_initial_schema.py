@@ -1,7 +1,8 @@
 """Initial schema + app_config seed. AISNP-25 · Owner: ATLAS"""
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID, JSONB, TIMESTAMPTZ
+from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy import DateTime as TIMESTAMPTZ
 import uuid
 
 revision = '0001_initial_schema'
