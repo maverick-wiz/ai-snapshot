@@ -3,7 +3,7 @@ SQLAlchemy 2.0 Async ORM Models
 AISNP-24 · Owner: ATLAS
 """
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional
 from sqlalchemy import (
     Boolean, String, Text, SmallInteger, CHAR,
@@ -11,8 +11,9 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy import DateTime
-TIMESTAMPTZ = DateTime(timezone=True)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+TIMESTAMPTZ = DateTime(timezone=True)
 
 
 def utcnow():
