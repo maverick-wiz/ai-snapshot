@@ -3,7 +3,7 @@ Users CRUD — POST /api/users · GET /api/users/{id}
 AISNP-27 · Owner: ATLAS
 """
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 from fastapi import APIRouter, HTTPException, Header, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -30,13 +30,13 @@ async def get_current_user(
     result = await db.execute(
         select(UserSession).where(
             UserSession.session_token == x_session_token,
-            UserSession.expires_at > datetime.now(timezone.utc)
+            UserSession.expires_at > datetime.utcnow()
         )
     )
     session = result.scalar_one_or_none()
     if not session:
         raise HTTPException(401, "Invalid or expired session token")
-    session.last_seen_at = datetime.now(timezone.utc)
+    session.last_seen_at = datetime.utcnow()
     result2 = await db.execute(select(User).where(User.id == session.user_id))
     user = result2.scalar_one_or_none()
     if not user:

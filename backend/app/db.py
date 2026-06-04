@@ -7,6 +7,10 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from typing import AsyncGenerator
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/ai_snapshot")
+# Disable SSL for cluster-internal IP connections (asyncpg does hostname check even with IPs)
+if "sslmode" not in DATABASE_URL and "ssl" not in DATABASE_URL:
+    sep = "&" if "?" in DATABASE_URL else "?"
+    DATABASE_URL = DATABASE_URL + sep + "ssl=disable"
 
 engine = create_async_engine(
     DATABASE_URL,

@@ -19,7 +19,11 @@ TICKER_NAMES = {
 
 def _fetch_yfinance(ticker: str) -> dict:
     import yfinance as yf
-    t = yf.Ticker(ticker)
+    import requests
+    # Short timeout so GBM fallback kicks in quickly when offline
+    session = requests.Session()
+    session.timeout = 3
+    t = yf.Ticker(ticker, session=session)
     info = t.fast_info
     price = float(info.last_price or 0)
     prev = float(info.previous_close or price)
@@ -45,7 +49,11 @@ async def get_stocks(request: Request, tickers: str = Query(",".join(DEFAULT_TIC
     quotes = []
     for symbol in ticker_list:
         try:
-            quotes.append(_fetch_yfinance(symbol))
+            q = _fetch_yfinance(symbol)
+            # Fall back to GBM if yfinance returned zero/invalid price
+            if not q or q.get("price", 0) <= 0:
+                raise ValueError(f"yfinance returned invalid price for {symbol}")
+            quotes.append(q)
         except Exception:
             quotes.append(generate_gbm_quote(symbol))
     await cache.set(cache_key, quotes, STOCKS_TTL)

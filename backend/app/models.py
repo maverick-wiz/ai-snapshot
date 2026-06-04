@@ -10,12 +10,14 @@ from sqlalchemy import (
     ForeignKey
 )
 from sqlalchemy.dialects.postgresql import UUID, JSONB
-from sqlalchemy import DateTime as TIMESTAMPTZ
+from sqlalchemy import DateTime
+TIMESTAMPTZ = DateTime(timezone=True)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 def utcnow():
-    return datetime.now(timezone.utc)
+    # DB columns are TIMESTAMP WITHOUT TIME ZONE — return naive UTC
+    return datetime.utcnow()
 
 
 class Base(DeclarativeBase):

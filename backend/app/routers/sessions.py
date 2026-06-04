@@ -31,11 +31,11 @@ async def create_session(request: Request, body: SessionCreate, db: AsyncSession
 
     raw_token = secrets.token_bytes(32)
     token_hash = hashlib.sha256(raw_token).hexdigest()
-    expires = datetime.now(timezone.utc) + timedelta(days=SESSION_TTL_DAYS)
+    expires = datetime.utcnow() + timedelta(days=SESSION_TTL_DAYS)
 
     session = UserSession(
         id=uuid.uuid4(), user_id=user.id, session_token=token_hash,
-        expires_at=expires, last_seen_at=datetime.now(timezone.utc),
+        expires_at=expires, last_seen_at=datetime.utcnow(),
         user_agent=request.headers.get("user-agent")
     )
     db.add(session)

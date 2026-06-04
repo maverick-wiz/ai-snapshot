@@ -7,7 +7,7 @@ const mockFetch = vi.fn()
 global.fetch = mockFetch
 
 describe('useStocks hook', () => {
-  beforeEach(() => vi.useFakeTimers())
+  beforeEach(() => { vi.useFakeTimers() })
   afterEach(() => { vi.useRealTimers(); vi.clearAllMocks() })
 
   it('calls fetchStocks on mount', async () => {
@@ -53,10 +53,28 @@ describe('useStocks hook', () => {
     expect(result.current.stockData).toHaveLength(1)
     expect(result.current.stockError).toBeTruthy()
   })
+
+  it('polls every 5 seconds', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        quotes: [{ symbol: 'AMD', name: 'AMD', price: 165, change: 1,
+                   change_pct: 0.6, prev_close: 164, volume: 10000000,
+                   data_source: 'yahoo_finance', last_updated: new Date().toISOString() }],
+        last_updated: new Date().toISOString()
+      })
+    })
+    const { useStocks } = await import('../hooks/useStocks')
+    renderHook(() => useStocks())
+    await act(async () => { await Promise.resolve() })
+    const callsAfterMount = mockFetch.mock.calls.length
+    await act(async () => { vi.advanceTimersByTime(5000); await Promise.resolve() })
+    expect(mockFetch.mock.calls.length).toBeGreaterThan(callsAfterMount)
+  })
 })
 
 describe('useNews hook', () => {
-  afterEach(() => vi.clearAllMocks())
+  afterEach(() => { vi.clearAllMocks() })
 
   it('fetches news on mount', async () => {
     mockFetch.mockResolvedValue({
@@ -93,5 +111,14 @@ describe('useNews hook', () => {
 
     expect(mockFetch).toHaveBeenCalledTimes(2)
     expect(mockFetch).toHaveBeenLastCalledWith(expect.stringContaining('country=DE'))
+  })
+
+  it('sets error on fetch failure', async () => {
+    mockFetch.mockRejectedValue(new Error('Network error'))
+    const { useNews } = await import('../hooks/useNews')
+    const { result } = renderHook(() => useNews('US'))
+    await act(async () => { await Promise.resolve() })
+    expect(result.current.newsError).toBeTruthy()
+    expect(result.current.articles).toHaveLength(0)
   })
 })

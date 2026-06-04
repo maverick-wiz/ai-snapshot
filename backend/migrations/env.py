@@ -12,6 +12,10 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/ai_snapshot")
+# Disable SSL for cluster-internal connections (no cert for IP-based connections)
+if "sslmode" not in DATABASE_URL and "ssl" not in DATABASE_URL:
+    sep = "&" if "?" in DATABASE_URL else "?"
+    DATABASE_URL = DATABASE_URL + sep + "ssl=disable"
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 import sys, os as _os

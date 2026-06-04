@@ -24,13 +24,15 @@ COPY backend/app/ ./app/
 COPY backend/migrations/ ./migrations/
 COPY backend/alembic.ini .
 
-# React build from Stage 1
-COPY --from=frontend-builder /frontend/dist/ ./static/
+# React build from Stage 1 (vite outputs to backend/static via outDir config)
+COPY --from=frontend-builder /frontend/../backend/static/ ./static/
+
+COPY backend/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 RUN chown -R appuser:appuser /app
 USER appuser
 
 EXPOSE 8765
 
-# Run migrations then start server
-CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8765 --workers 2"]
+CMD ["./entrypoint.sh"]
