@@ -3,6 +3,7 @@ GET /api/news — Google News RSS per country with rate limiting.
 AISNP-16 · AISNP-20 · Owner: OMEGA
 """
 import re
+import urllib.parse
 import urllib.request
 from fastapi import APIRouter, Query, HTTPException, Request
 from app.schemas import NewsResponse, NewsArticle
@@ -34,7 +35,7 @@ DEFAULT_IMAGE = "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=
 
 def _fetch_rss(hl: str, gl: str, ceid: str) -> list[dict]:
     url = (f"https://news.google.com/rss/search"
-           f"?q={urllib.request.quote(NEWS_QUERY)}&hl={hl}&gl={gl}&ceid={ceid}")
+           f"?q={urllib.parse.quote(NEWS_QUERY)}&hl={hl}&gl={gl}&ceid={ceid}")
     try:
         feed = feedparser.parse(url)
         articles = []

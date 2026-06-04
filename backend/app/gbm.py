@@ -25,21 +25,21 @@ DT = 1 / 252     # one trading day
 
 
 def _next_gbm_price(symbol: str) -> float:
-    baseline = GBM_BASELINES.get(symbol, {}).get("price", 100.0)
-    current = _gbm_state.get(symbol, baseline)
+    baseline: float = GBM_BASELINES.get(symbol, {}).get("price", 100.0)  # type: ignore[assignment]
+    current: float = _gbm_state.get(symbol, baseline)
     z = random.gauss(0, 1)
     next_price = current * math.exp((MU - 0.5 * SIGMA ** 2) * DT + SIGMA * math.sqrt(DT) * z)
     _gbm_state[symbol] = next_price
     return round(next_price, 2)
 
 
-def generate_gbm_quote(symbol: str) -> dict:
-    info = GBM_BASELINES.get(symbol, {"price": 100.0, "name": symbol})
+def generate_gbm_quote(symbol: str) -> dict:  # type: ignore[type-arg]
+    info: dict = GBM_BASELINES.get(symbol, {"price": 100.0, "name": symbol})  # type: ignore[assignment]
     price = _next_gbm_price(symbol)
     prev_close = round(price * (1 + random.uniform(-0.02, 0.02)), 2)
     change = round(price - prev_close, 2)
     change_pct = round((change / prev_close) * 100, 2) if prev_close else 0.0
-    baseline_vol = int(info["price"] * 1_000_000 / 100)
+    baseline_vol: int = int(float(info["price"]) * 1_000_000 / 100)
     volume = int(baseline_vol * random.uniform(0.8, 1.2))
     return {
         "symbol": symbol,

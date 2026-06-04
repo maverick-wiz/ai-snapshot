@@ -17,13 +17,9 @@ TICKER_NAMES = {
     "MSFT": "Microsoft Corporation", "AVGO": "Broadcom Inc.",
 }
 
-def _fetch_yfinance(ticker: str) -> dict:
+def _fetch_yfinance(ticker: str) -> dict:  # type: ignore[type-arg]
     import yfinance as yf
-    import requests
-    # Short timeout so GBM fallback kicks in quickly when offline
-    session = requests.Session()
-    session.timeout = 3
-    t = yf.Ticker(ticker, session=session)
+    t = yf.Ticker(ticker)
     info = t.fast_info
     price = float(info.last_price or 0)
     prev = float(info.previous_close or price)
